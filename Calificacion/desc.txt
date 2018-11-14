@@ -1,0 +1,4 @@
+Es una red que tiene dos entradas ( Horas de descanso, horas de estudio)
+y una salida (una supuesta calificacion dependiendo de esas dos entradas)
+
+Desventaja: Solo es posible dos entradas nada mas.
