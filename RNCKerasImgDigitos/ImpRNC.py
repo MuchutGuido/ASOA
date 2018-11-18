@@ -8,6 +8,18 @@ model.add(Dense(512, activation='relu', input_shape=(p.dimData,)))
 model.add(Dense(512, activation='relu'))
 model.add(Dense(p.nClasses, activation='softmax'))
 
+"""
+# Para reajustar el sobreajuste (parámetros de red se están inclinando demasiado hacia los datos de entrenamiento)
+from keras.layers import Dropout
+ 
+model_reg = Sequential()
+model_reg.add(Dense(512, activation='relu', input_shape=(dimData,)))
+model_reg.add(Dropout(0.5))
+model_reg.add(Dense(512, activation='relu'))
+model_reg.add(Dropout(0.5))
+model_reg.add(Dense(nClasses, activation='softmax'))
+"""
+
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
 
 history = model.fit(p.train_data, p.train_labels_one_hot, batch_size=256, epochs=20, verbose=1, validation_data=(p.test_data, p.test_labels_one_hot))
