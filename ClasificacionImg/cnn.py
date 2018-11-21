@@ -1,7 +1,7 @@
 # Importando las librerias y paquetes de Keras
 
 # Para hacer un modelo de red neuronal como una red secuencial (secuencia de capas) 
-from keras.models import Sequential
+from keras.models import Sequential, model_from_json
 # Para realizar operacion de Convolusion
 from keras.layers import Conv2D
 # Para operacion de agrupacion (agr min, agr media, agr max) MaxPoooling (pixel de valor max de la region)
@@ -32,7 +32,8 @@ clasificador.add(Dense(units=1, activation='sigmoid')) #Capa de salida
 
 # Compilar el modelo
 # Parametros (optimizador = algoritmo de descenso de gradiente estocastico, perdida = funcion de perdida, metrica = metrica de rendimiento)
-clasificador.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+clasificador.compile(optimizer = 'rmsprop', loss = 'binary_crossentropy', metrics = ['accuracy'])
+#clasificador.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
 
 from keras.preprocessing.image import ImageDataGenerator
 train_datagen = ImageDataGenerator(rescale = 1./255,
@@ -53,16 +54,15 @@ test_set = test_datagen.flow_from_directory('test_set',
 
 clasificador.fit_generator(training_set,
                             steps_per_epoch = 8000,
-                            epochs = 2,
+                            epochs = 1,
                             validation_data = test_set,
                             validation_steps = 2100)
 
-#clasificador.save("redEntrenada.h5")
-
+training_set.class_indices
 # Guardar el modelo creado
-model_json = model.to_json()
+model_json = clasificador.to_json()
 with open("animals.json", "w") as json_file:
     json_file.write(model_json)
 # serializar los pesos a HDF5
-clasificador.save_weights("animalsPesos.h5")
+clasificador.save("animalsPesos.h5")
 print("Modelo Guardado!")
