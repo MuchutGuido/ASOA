@@ -1,5 +1,6 @@
+from time import time
 # Importando las librerias y paquetes de Keras
-
+from matplotlib import pyplot as plt
 # Para hacer un modelo de red neuronal como una red secuencial (secuencia de capas) 
 from keras.models import Sequential, model_from_json
 # Para realizar operacion de Convolusion
@@ -10,6 +11,8 @@ from keras.layers import MaxPooling2D
 from keras.layers import Flatten
 # Para realizar la conexion completa de la red neuronal
 from keras.layers import Dense
+
+from keras.callbacks import TensorBoard
 
 # Se crea un objeto de la clase Sequential
 clasificador = Sequential()
@@ -29,6 +32,8 @@ clasificador.add(Dense(units=128, activation='relu')) #Capa oculta
 
 # Nos dara una unica salida
 clasificador.add(Dense(units=1, activation='sigmoid')) #Capa de salida
+
+tensorboard = TensorBoard(log_dir="logs/{}".format(time()), histogram_freq=0, write_graph=True, write_grads=True,  update_freq='epoch')
 
 # Compilar el modelo
 # Parametros (optimizador = algoritmo de descenso de gradiente estocastico, perdida = funcion de perdida, metrica = metrica de rendimiento)
@@ -52,17 +57,38 @@ test_set = test_datagen.flow_from_directory('test_set',
                                             batch_size = 32,
                                             class_mode = 'binary')
 
-clasificador.fit_generator(training_set,
+history = clasificador.fit_generator(training_set,
                             steps_per_epoch = 8000,
-                            epochs = 1,
+                            epochs = 4,
                             validation_data = test_set,
-                            validation_steps = 2100)
+                            validation_steps = 2100,
+                            callbacks=[tensorboard])
 
 training_set.class_indices
 # Guardar el modelo creado
 model_json = clasificador.to_json()
-with open("animals.json", "w") as json_file:
+with open("TSanimals.json", "w") as json_file:
     json_file.write(model_json)
 # serializar los pesos a HDF5
-clasificador.save("animalsPesos.h5")
+clasificador.save("TSanimalsPesos.h5")
 print("Modelo Guardado!")
+
+#Plot the Loss Curves
+plt.figure(figsize=[8,6])
+plt.plot(history.history['loss'],'r',linewidth=3.0)
+plt.plot(history.history['val_loss'],'b',linewidth=3.0)
+plt.legend(['Perdida de entrenamiento', 'Perdida de validacion'],fontsize=18)
+plt.xlabel('Epocas ',fontsize=16)
+plt.ylabel('Perdida',fontsize=16)
+plt.title('Curva de Pedida',fontsize=16)
+plt.show()
+ 
+#Plot the Accuracy Curves
+plt.figure(figsize=[8,6])
+plt.plot(history.history['acc'],'r',linewidth=3.0)
+plt.plot(history.history['val_acc'],'b',linewidth=3.0)
+plt.legend(['Precision de Entrenamiento', 'Precision de Validacion'],fontsize=18)
+plt.xlabel('Epocas ',fontsize=16)
+plt.ylabel('Precision',fontsize=16)
+plt.title('Curva de Precision',fontsize=16)
+plt.show()

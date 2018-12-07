@@ -1,4 +1,13 @@
 ClasificacionImg/test_set
 ClasificacionImg/training_set
 ClasificacionImg/ImgPrueba
+ClasificacionImg/logs
+ClasificacionImg/animals.json
+ClasificacionImg/animalsPesos.h5
+ClasificacionImg/TSanimals.json
+ClasificacionImg/TSanimalsPesos.h5
+Diabetes/model.h5
+Diabetes/model.json
+RNCKerasImgDigitos/logs
 RedesPreEntrenadas/ImgPrueba
+RedesPE/ImgPrueba
